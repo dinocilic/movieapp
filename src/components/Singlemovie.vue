@@ -2,14 +2,14 @@
   <div class="details">
       <button @click="$router.go(-1)" type="button" name="button" class="btn btn-dark">Back</button>
       <div class="row">
-          <div class="col-12">
-              <img :src='"https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + movie.poster_path' alt="" class="img-fluid single-img">
+          <div class="col-12 text-center trailer">
+              <iframe v-for="vi in video" :key="vi.id" width="660" height="415" :src='"https://www.youtube.com/embed/" +  vi.key' frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
           </div>
           <div class="col-12">
               <h4 class="text-center show_title"> {{ movie.title }}</h4>
               <div class="row">
                   <div class="col-7">
-                      <div class="card card-body">
+                      <div class="card card-body overview">
                           <small>
                              <i class="fa fa-info"></i> Overview of the show:
                           </small>
@@ -21,6 +21,7 @@
                   </div>
                   <div class="col-5">
                       <div class="card card-body">
+                          <img :src='"https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + movie.poster_path' alt="" class="img-fluid single-img">
                           <h6>
                             <hr>
                              <small>
@@ -52,7 +53,7 @@ export default {
   data () {
     return {
       movie: '',
-      video: ''
+      video: []
     }
   },
   methods: {
@@ -65,12 +66,13 @@ export default {
     getVideo (id) {
       axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=a408ff2af5a75c2238309877dc8cefa5&language=en-US`)
         .then(function (resp) {
-          this.video = resp.data
+          this.video = resp.data.results.slice(0, 1)
         }.bind(this))
     }
   },
   created () {
     this.getMovie(this.$route.params.id)
+    this.getVideo(this.$route.params.id)
   }
 }
 </script>
@@ -94,7 +96,7 @@ export default {
 }
 .details .card-text {
     padding: 25px;
-    font-size: 18px;
+    font-size: 15px;
     letter-spacing: 2px;
 }
 .details .fa {
@@ -102,5 +104,8 @@ export default {
     font-size: 18px;
     padding: 5px;
     border-bottom: 2px solid black;
+}
+.details .trailer {
+    margin-bottom: 10px;
 }
 </style>
